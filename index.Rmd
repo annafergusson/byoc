@@ -1,0 +1,150 @@
+---
+output: 
+  html_document:
+    df_print: paged
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+
+# a starting list of packages I use a lot for intro stats
+library(iNZightPlots)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(magrittr)
+library(readr)
+library(stringr)
+library(purrr)
+library(forcats)
+library(glue)
+library(lubridate)
+library(knitr)
+library(jsonlite)
+library(magick)
+library(htmltools)
+library(rvest)
+
+# for cleaner output
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# I think the stuff below means the previous code is not cached but ???
+options(tutorial.storage = list(
+  # save an arbitrary R object "data" to storage
+   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
+  # retreive a single R object from storage
+  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
+    NULL 
+  },
+  
+  # retreive a list of all R objects stored
+  get_objects = function(tutorial_id, tutorial_version, user_id) { 
+    list() 
+  },
+  
+  # remove all stored R objects
+  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
+  }
+))
+
+# hack to get iNZight plots to show
+showPlot <- function(inzy, width = 800, height = 400){
+  plot <- magick::image_graph(width = width, height = height)
+  inzy
+  dev.off()
+  plot[length(plot)] #show the last layer
+}
+
+# function to get data out and into iNZightLite
+iNZightLink <- function(data) {
+  json_output <- jsonlite::toJSON(data)
+  anna_url <- "https://csv.monster/tempcsv.php"
+  response <- httr::POST(url = anna_url, body = list(t = json_output))
+  temp_csv_url <- httr::content(response, "text")
+  src <- paste0("https://lite.docker.stat.auckland.ac.nz/?url=", temp_csv_url, "&land=visualize")
+  data.frame(link_to_iNZight_lite = paste0("<a href='", src, "' target = '_blank'>", src, "</a>")) %>% kable()
+}
+```
+
+
+<style>
+    /* Absolute Center Spinner */
+.loading {
+  z-index: 999;
+  overflow: show;
+  margin: auto;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.3);
+}
+</style>
+
+<div id="loader"></div>
+
+```{r refresh-button}
+htmltools::tags$button("Get code", 
+                       id = 'refresh_code')
+```
+
+```{r live-code, exercise=TRUE}
+
+```
+
+```{js}
+$().ready(function(){
+  var urlParams = new URLSearchParams(window.location.search);
+  var code = "";
+  if(urlParams.has('code'))
+  {
+    code = urlParams.get('code');
+    code = decodeURI(code);
+  }
+
+  var new_id = "tutorial-exercise-live-code-code-editor";
+  //extra ace editor changes
+  var editor = ace.edit(new_id);
+  editor.getSession().setUseWrapMode(true);
+  editor.setFontSize("14px");
+    editor.setValue(code);
+  editor.setOptions({maxLines: Infinity});
+  var line_last = editor.session.getLength();
+  editor.gotoLine(line_last);
+  document.getElementById("tutorial-exercise-live-code-output").innerHTML = "";
+  
+  //add refresh_code function to button
+  $("#refresh_code").click(function(){
+    document.getElementById('section-loader').className = 'loading';
+    var urlParams = new URLSearchParams(window.location.search);
+    var db_link = "";
+    if(urlParams.has('db_link'))
+    {
+      db_link = urlParams.get('db_link');
+      db_link = decodeURI(db_link);
+    }
+    if(db_link !== "")
+    {
+      fetch(db_link, {mode: 'cors'})
+      .then(function(response) {
+        return response.text();
+      })
+      .then(function(new_code) {
+        var editor = ace.edit("tutorial-exercise-live-code-code-editor");
+        editor.setValue(new_code);
+        var line_last = editor.session.getLength();
+        editor.gotoLine(line_last);
+        document.getElementById('section-loader').className = '';
+      });
+    }
+    else
+    {
+      document.getElementById('section-loader').className = '';
+    }
+  });
+});
+```
