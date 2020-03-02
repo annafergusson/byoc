@@ -29,7 +29,7 @@ library(htmltools)
 library(rvest)
 
 # for cleaner output
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 4)
 
 # I think the stuff below means the previous code is not cached but ???
 options(tutorial.storage = list(
