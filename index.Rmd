@@ -1,4 +1,5 @@
 ---
+title: BYOC
 output: 
   html_document:
     df_print: paged
@@ -83,6 +84,12 @@ iNZightLink <- function(data) {
   height: 100vh;
   background-color: rgba(0,0,0,0.3);
 }
+.title{
+display:none;
+}
+#refresh_code{
+display:none;
+}
 </style>
 
 <div id="loader"></div>
@@ -98,6 +105,7 @@ htmltools::tags$button("Get code",
 
 ```{js}
 $().ready(function(){
+  updateEditor();
   var urlParams = new URLSearchParams(window.location.search);
   var code = "";
   if(urlParams.has('code'))
@@ -105,17 +113,36 @@ $().ready(function(){
     code = urlParams.get('code');
     code = decodeURI(code);
   }
+  if(code !== "")
+    {
+        document.getElementById('section-loader').className = 'loading';
+      fetch(code, {mode: 'cors'})
+      .then(function(response) {
+        return response.text();
+      })
+      .then(function(new_code) {
+        var editor = ace.edit("tutorial-exercise-live-code-code-editor");
+        editor.setValue(new_code);
+        var line_last = editor.session.getLength();
+        editor.gotoLine(line_last);
+        document.getElementById('section-loader').className = '';
+      });
+    }
+    else
+    {
+      document.getElementById('section-loader').className = '';
+    }
 
-  var new_id = "tutorial-exercise-live-code-code-editor";
-  //extra ace editor changes
-  var editor = ace.edit(new_id);
-  editor.getSession().setUseWrapMode(true);
-  editor.setFontSize("14px");
-    editor.setValue(code);
-  editor.setOptions({maxLines: Infinity});
-  var line_last = editor.session.getLength();
-  editor.gotoLine(line_last);
-  document.getElementById("tutorial-exercise-live-code-output").innerHTML = "";
+  
+  //hide "get code" button if there is no live code to pull in
+  if(urlParams.has('db_link'))
+    {
+      $("#refresh_code").show();
+    }
+    else
+    {
+      $("#refresh_code").hide();
+    }
   
   //add refresh_code function to button
   $("#refresh_code").click(function(){
@@ -147,4 +174,14 @@ $().ready(function(){
     }
   });
 });
+
+function updateEditor(){
+  //extra ace editor changes
+  var new_id = "tutorial-exercise-live-code-code-editor";
+  var editor = ace.edit(new_id);
+  editor.getSession().setUseWrapMode(true);
+  editor.setFontSize("14px");
+  editor.setOptions({maxLines: Infinity});
+  document.getElementById("tutorial-exercise-live-code-output").innerHTML = "";
+}
 ```
