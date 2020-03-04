@@ -27,6 +27,10 @@ library(jsonlite)
 library(magick)
 library(htmltools)
 library(rvest)
+# new packages 5/3/20
+library(gtrendsR)
+library(ggthemr)
+ggthemr("fresh")
 
 # for cleaner output
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 4)
