@@ -3,6 +3,8 @@ title: BYOC
 output: 
   html_document:
     df_print: paged
+    includes:
+      in_header: resizer.html
 runtime: shiny_prerendered
 ---
 
@@ -27,10 +29,14 @@ library(jsonlite)
 library(magick)
 library(htmltools)
 library(rvest)
+
 # new packages 5/3/20
 library(gtrendsR)
 library(ggthemr)
 ggthemr("fresh")
+
+# new packages 13/6/20
+library(httr)
 
 # for cleaner output
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 4)
@@ -73,8 +79,7 @@ iNZightLink <- function(data) {
 }
 ```
 
-
-<style>
+```{css}
     /* Absolute Center Spinner */
 .loading {
   z-index: 999;
@@ -94,7 +99,7 @@ display:none;
 #refresh_code{
 display:none;
 }
-</style>
+```
 
 <div id="loader"></div>
 
@@ -188,4 +193,5 @@ function updateEditor(){
   editor.setOptions({maxLines: Infinity});
   document.getElementById("tutorial-exercise-live-code-output").innerHTML = "";
 }
+
 ```
