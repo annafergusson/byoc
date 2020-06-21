@@ -32,14 +32,12 @@ library(rvest)
 
 # new packages 5/3/20
 library(gtrendsR)
-library(ggthemr)
-ggthemr("fresh")
 
 # new packages 13/6/20
 library(httr)
 
 # for cleaner output
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 4)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4)
 
 # I think the stuff below means the previous code is not cached but ???
 options(tutorial.storage = list(
@@ -93,11 +91,17 @@ iNZightLink <- function(data) {
   height: 100vh;
   background-color: rgba(0,0,0,0.3);
 }
+
 .title{
 display:none;
 }
+
 #refresh_code{
 display:none;
+}
+
+img{
+  width:80%;
 }
 ```
 
@@ -134,6 +138,7 @@ $().ready(function(){
         editor.setValue(new_code);
         var line_last = editor.session.getLength();
         editor.gotoLine(line_last);
+        editor.setOptions({maxLines: Infinity});
         document.getElementById('section-loader').className = '';
       });
     }
@@ -174,6 +179,7 @@ $().ready(function(){
         editor.setValue(new_code);
         var line_last = editor.session.getLength();
         editor.gotoLine(line_last);
+        editor.setOptions({maxLines: Infinity});
         document.getElementById('section-loader').className = '';
       });
     }
