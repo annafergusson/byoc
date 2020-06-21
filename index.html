@@ -260,6 +260,25 @@ $().ready(function(){
       document.getElementById('section-loader').className = '';
     }
 
+if(urlParams.has('raw'))
+  {
+    code = urlParams.get('raw');
+    code = decodeURI(code);
+  }
+  if(code !== "")
+    {
+        document.getElementById('section-loader').className = 'loading';
+        var editor = ace.edit("tutorial-exercise-live-code-code-editor");
+        editor.setValue(code);
+        var line_last = editor.session.getLength();
+        editor.gotoLine(line_last);
+        editor.setOptions({maxLines: Infinity});
+        document.getElementById('section-loader').className = '';
+    }
+    else
+    {
+      document.getElementById('section-loader').className = '';
+    }
   
   //hide "get code" button if there is no live code to pull in
   if(urlParams.has('db_link'))
